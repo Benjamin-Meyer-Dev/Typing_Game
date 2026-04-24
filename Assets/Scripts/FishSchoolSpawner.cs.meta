@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: b00d15d3363067c4286ebbae08a3a04a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - fishSchoolPrefab: {fileID: 6666347457473095392, guid: 51c1881c0103494419eaa952909344f0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
