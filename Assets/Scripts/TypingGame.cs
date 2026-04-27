@@ -108,6 +108,12 @@ public class TypingGame : MonoBehaviour
     private bool wasTypingAreaOpen = false;
 
     // -------------------------------------------------------------------------
+    // Private State — Scroll
+    // -------------------------------------------------------------------------
+
+    private int scrollOffset = 0;
+
+    // -------------------------------------------------------------------------
     // Private State — Coroutines and Blink
     // -------------------------------------------------------------------------
 
@@ -738,6 +744,7 @@ public class TypingGame : MonoBehaviour
         {
             typedInput = typedInput.Substring(0, typedInput.Length - 1);
             hasError = false;
+            scrollOffset = ComputeScrollOffset();
 
             StartBlink();
             UpdateTypingDisplay();
@@ -846,6 +853,7 @@ public class TypingGame : MonoBehaviour
             hasError = true;
         }
 
+        scrollOffset = ComputeScrollOffset();
         StartBlink();
         UpdateTypingDisplay();
     }
@@ -904,6 +912,7 @@ public class TypingGame : MonoBehaviour
         requiredWord = ApplyCapitalization(currentList[wordIndex], currentLevel);
         typedInput = "";
         hasError = false;
+        scrollOffset = 0;
 
         UpdateTypingDisplay();
         StartBlink();
@@ -999,14 +1008,49 @@ public class TypingGame : MonoBehaviour
         }
     }
 
+    // Compute how many characters to skip from the left so the cursor stays near
+    // the midpoint of the box. Uses GetPreferredValues on the full word so charWidth
+    // stays consistent regardless of what slice is currently displayed.
+    int ComputeScrollOffset()
+    {
+        if (wordToType == null || requiredWord.Length == 0)
+        {
+            return 0;
+        }
+
+        float boxWidth = wordToType.rectTransform.rect.width;
+        float fullWidth = wordToType.GetPreferredValues(requiredWord).x;
+        float charWidth = fullWidth / requiredWord.Length;
+        int charsVisible = Mathf.Max(1, Mathf.FloorToInt(boxWidth / charWidth));
+        int halfVisible = charsVisible / 2;
+        int cursorPos = typedInput.Length;
+
+        if (cursorPos <= halfVisible)
+        {
+            return 0;
+        }
+
+        int maxOffset = Mathf.Max(0, requiredWord.Length - charsVisible);
+
+        return Mathf.Min(cursorPos - halfVisible, maxOffset);
+    }
+
+    // Return the cached scroll offset computed at the last input event
+    int GetScrollOffset()
+    {
+        return scrollOffset;
+    }
+
     // Rebuild the target word display with cursor highlight and the typed word display with coloured letters
     void UpdateTypingDisplay()
     {
+        int offset = GetScrollOffset();
+
         if (wordToType != null)
         {
             string targetText = "";
 
-            for (int index = 0; index < requiredWord.Length; index++)
+            for (int index = offset; index < requiredWord.Length; index++)
             {
                 if (index == typedInput.Length)
                 {
@@ -1031,7 +1075,7 @@ public class TypingGame : MonoBehaviour
 
         string coloredText = "";
 
-        for (int index = 0; index < typedInput.Length; index++)
+        for (int index = offset; index < typedInput.Length; index++)
         {
             bool isCorrect = index < requiredWord.Length && typedInput[index] == requiredWord[index];
             string color = isCorrect ? CorrectLetterColor : IncorrectLetterColor;
