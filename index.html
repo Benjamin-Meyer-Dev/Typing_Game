@@ -31,21 +31,21 @@
   </head>
   <body>
     <canvas id="unity-canvas" tabindex="-1"></canvas>
-    <script src="Build/WebGL Build.loader.js"></script>
+    <script src="Build/TypingGame.loader.js"></script>
     <script>
-      createUnityInstance(document.querySelector("#unity-canvas"), {
+    createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/WebGL Build.data",
-        frameworkUrl: "Build/WebGL Build.framework.js",
-        codeUrl: "Build/WebGL Build.wasm",
+        dataUrl: "Build/TypingGame.data",
+        frameworkUrl: "Build/TypingGame.framework.js",
+        codeUrl: "Build/TypingGame.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "TypingGame",
         productVersion: "1.0",
-      }).then((unityInstance) => {
-      }).catch((message) => {
+    }).then((unityInstance) => {
+    }).catch((message) => {
         alert(message);
-      });
+    });
     </script>
   </body>
 </html>
