@@ -26,14 +26,16 @@
         position: fixed;
         top: 0;
         left: 0;
+        outline: none; /* hide focus ring */
       }
     </style>
   </head>
   <body>
-    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <canvas id="unity-canvas" tabindex="0"></canvas>
     <script src="Build/TypingGame.loader.js"></script>
     <script>
-    createUnityInstance(document.querySelector("#unity-canvas"), {
+    var canvas = document.querySelector("#unity-canvas");
+    createUnityInstance(canvas, {
         arguments: [],
         dataUrl: "Build/TypingGame.data",
         frameworkUrl: "Build/TypingGame.framework.js",
@@ -43,11 +45,16 @@
         productName: "TypingGame",
         productVersion: "1.0",
     }).then((unityInstance) => {
+        canvas.focus();
     }).catch((message) => {
         alert(message);
     });
+
+    // Re-focus the canvas if focus is ever lost (e.g. user clicks elsewhere then back)
+    document.addEventListener('mousedown', function () { canvas.focus(); });
     </script>
     <script>
+      // Stop Chrome from swallowing Backspace so it reaches Unity's input system.
       window.addEventListener('keydown', function (e) {
         if (e.key === 'Backspace') {
           e.preventDefault();
