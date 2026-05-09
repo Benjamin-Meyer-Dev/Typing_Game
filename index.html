@@ -47,5 +47,12 @@
         alert(message);
     });
     </script>
+    <script>
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+        }
+      }, true);
+    </script>
   </body>
 </html>
