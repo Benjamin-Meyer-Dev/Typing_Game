@@ -39,14 +39,11 @@
 
       document.addEventListener('mousedown', function () { canvas.focus(); });
 
-      // Unity 6 WebGL doesn't surface the Backspace key through its Input System
-      // on Chrome, so we intercept it here and forward it to the TypingGame
-      // GameObject's JsBackspace() method directly.
       window.addEventListener('keydown', function (e) {
         if (e.key === 'Backspace') {
           e.preventDefault();
           if (unityInstanceRef) {
-            unityInstanceRef.SendMessage('TypingGame', 'JsBackspace');
+            unityInstanceRef.SendMessage('Canvas', 'JsBackspace');
           }
         }
       }, true);
